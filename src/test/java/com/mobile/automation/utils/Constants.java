@@ -1,4 +1,4 @@
-package com.qa.mobileautomation.utills;
+package com.mobile.automation.utils;
 
 
 public class Constants {

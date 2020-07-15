@@ -1,16 +1,15 @@
-package com.qa.mobileautomation.data;
+package com.mobile.automation.commons;
 
-import lombok.AllArgsConstructor;
+import java.util.function.Supplier;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.function.Supplier;
-
 @Component
-public class Endpoints {
+@Getter
+@RequiredArgsConstructor
+public class Configurations {
     @Value("${aut}")
     private String aut;
     @Value("${url}")
@@ -25,6 +24,10 @@ public class Endpoints {
     private String executionType;
     @Value("${iosPlatformVersion}")
     private String iosPlatformVersion;
+    @Value("${driverTimeOut}")
+    private String driverTimeOut;
+    @Value("${port}")
+    private String port;
 
 
     public Supplier<String> getAppType = () -> aut;
@@ -34,5 +37,6 @@ public class Endpoints {
     public Supplier<String> getAndroidVersion = () -> androidPlatformVersion;
     public Supplier<String> getExecutionMode = () -> executionType;
     public Supplier<String> getIosVersion = () -> iosPlatformVersion;
-
+    public Supplier<String> getDriverTimeOut = () -> driverTimeOut;
+    public Supplier<Integer> getPort = () -> Integer.valueOf(port);
 }
