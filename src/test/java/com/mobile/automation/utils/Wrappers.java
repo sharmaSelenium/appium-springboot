@@ -1,7 +1,10 @@
 package com.mobile.automation.utils;
 
-import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.MobileElement;
+import io.appium.java_client.*;
+import io.appium.java_client.touch.LongPressOptions;
+import io.appium.java_client.touch.TapOptions;
+import io.appium.java_client.touch.offset.ElementOption;
+import io.appium.java_client.touch.offset.PointOption;
 import org.junit.Assert;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -68,7 +71,25 @@ public class Wrappers extends BaseDriver {
         }
     }
 
+    public static void tap(MobileElement element){
+       new TouchAction<>(driver).tap(new TapOptions().withElement(ElementOption.element(element))).perform();
+    }
 
+    public static void longPress(MobileElement element, int duration){
+        new TouchAction<>(driver).longPress(LongPressOptions.longPressOptions().
+                withElement(ElementOption.element(element)).withDuration(Duration.ofSeconds((long) duration))).
+                release().perform();
+    }
 
+    public static void swipe(MobileElement element1 , int duration , MobileElement element2){
+        new TouchAction<>(driver).longPress(LongPressOptions.longPressOptions().
+                withElement(ElementOption.element(element1)).withDuration(Duration.ofSeconds((long) duration))).
+                moveTo(ElementOption.element(element2)).release().perform();
+    }
 
+    public static void scrollIntoView(String text){
+        driver.findElement(MobileBy.
+                AndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\""+text+"\"))"));
+
+    }
 }

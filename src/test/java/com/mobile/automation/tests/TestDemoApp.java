@@ -14,15 +14,36 @@ import org.springframework.stereotype.Component;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 
 public class TestDemoApp extends BaseTest {
+    private HomeScreen homeScreen ;
 
     @Test
-    public void test(){
+    public void testPreferencesOptions(){
         System.out.println("test started");
-        HomeScreen homeScreen = new HomeScreen(driver);
+        homeScreen = new HomeScreen(driver);
         homeScreen.selectPreference();
         homeScreen.preference().selectPreferenceDependencies();
         homeScreen.preference().selectWifiCheckBox();
+        homeScreen.preference().selectWifiSettings();
 
     }
 
+    @Test
+    public void testViewOptions(){
+        System.out.println("test started");
+        homeScreen = new HomeScreen(driver);
+        homeScreen.selectViews();
+        homeScreen.view().selectExpandableLists();
+        homeScreen.view().selectCustomerAdaptor();
+        homeScreen.view().longPressPeopleName();
+
+    }
+
+    @Test
+    public void testSwipe(){
+        System.out.println("test started");
+        homeScreen = new HomeScreen(driver);
+        homeScreen.selectViews();
+        homeScreen.view().scrollView("Spinner");
+
+    }
 }

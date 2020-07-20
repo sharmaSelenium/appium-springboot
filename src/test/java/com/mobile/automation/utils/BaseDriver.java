@@ -27,7 +27,6 @@ public class BaseDriver {
 
     @Autowired
     Configurations config;
-
     public static AppiumDriver<MobileElement> driver;
 
     public static DesiredCapabilities capabilities = null;
