@@ -2,30 +2,22 @@ package com.mobile.automation.utils;
 
 
 import com.mobile.automation.config.Config;
-import io.appium.java_client.MobileElement;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.remote.MobileCapabilityType;
-import io.appium.java_client.service.local.AppiumDriverLocalService;
+import com.mobile.automation.screens.LanguagePreference;
+import com.mobile.automation.screens.LoginScreen;
+import com.mobile.automation.screens.dashboard.DashboardScreen;
+import com.mobile.automation.screens.home.HomeScreen;
+import com.mobile.automation.screens.travel.FlightInfoScreen;
+import com.mobile.automation.screens.travel.TravelScreen;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.openqa.selenium.remote.DesiredCapabilities;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.ServerSocket;
-import java.net.URL;
-import java.nio.file.Paths;
-import java.util.concurrent.TimeUnit;
-
-import static com.mobile.automation.utils.Constants.ANDROID_APP_PATH;
-import static com.mobile.automation.utils.Constants.IOS_APP_PATH;
 
 
 @ContextConfiguration(classes = Config.class)
@@ -34,12 +26,34 @@ import static com.mobile.automation.utils.Constants.IOS_APP_PATH;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class BaseTest extends BaseDriver {
 
+    public LanguagePreference languagePreference;
+    public LoginScreen loginScreen;
+    public HomeScreen homeScreen;
+    public DashboardScreen dashboardScreen;
+    public TravelScreen travelScreen;
+    public FlightInfoScreen flightInfoScreen;
+
         @BeforeAll
         public void launchDriver(){
             startServer();
             setAppPath();
+        }
+
+        @BeforeEach
+        public void launchApp(){
             setDriverType();
             setDriverTimeOut();
+            initializeScreenElements();
+        }
+
+        private void initializeScreenElements(){
+            languagePreference = new LanguagePreference(driver);
+            loginScreen = new LoginScreen(driver);
+            homeScreen = new HomeScreen(driver);
+            dashboardScreen = new DashboardScreen(driver);
+            travelScreen = new TravelScreen(driver);
+            flightInfoScreen = new FlightInfoScreen(driver);
+
         }
 
         @After
@@ -58,75 +72,5 @@ public class BaseTest extends BaseDriver {
         }
 
 
-        private void setDriverType() {
-            if(config.getAppType.get().equalsIgnoreCase("androidnative")){
-                capabilities = new DesiredCapabilities();
-                driver = new AndroidDriver<>(url, getAndroidNativeCapabilities(capabilities));
-            }
-            else if(config.getAppType.get().equalsIgnoreCase("iosnative")){
-                // ios driver
-            }
 
-        }
-
-
-        private DesiredCapabilities getAndroidNativeCapabilities(DesiredCapabilities capabilities){
-            capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.getAndroidVersion.get());
-            capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "Android");
-            capabilities.setCapability(MobileCapabilityType.APP, Paths.get(ANDROID_APP_PATH).toAbsolutePath().toString());
-            capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.getAndroidDevice.get());
-            return capabilities;
-        }
-
-        private DesiredCapabilities getIosNativeCapabilities(DesiredCapabilities capabilities){
-            capabilities.setCapability(MobileCapabilityType.PLATFORM_VERSION, config.getIosVersion.get());
-            capabilities.setCapability(MobileCapabilityType.PLATFORM_NAME, "IOS");
-            capabilities.setCapability(MobileCapabilityType.APP, Paths.get(IOS_APP_PATH));
-            capabilities.setCapability(MobileCapabilityType.DEVICE_NAME, config.getIosDevice.get());
-            return capabilities;
-        }
-
-
-        private void setAppPath()  {
-            if(config.getExecutionMode.get().equalsIgnoreCase("local")){
-                try {
-                    url = new URL(config.getURL.get() + "/wd/hub");
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-            else if(config.getExecutionMode.get().equalsIgnoreCase("remote")){
-                // future implementation
-            }
-        }
-
-    private void setDriverTimeOut() {
-        driver.manage().timeouts().implicitlyWait(Integer.parseInt(config.getDriverTimeOut.get()), TimeUnit.SECONDS);
-    }
-
-    private AppiumDriverLocalService startServer(){
-
-        if(!checkIfServerIsRunning(config.getPort.get())){
-            server = AppiumDriverLocalService.buildDefaultService();
-            server.start();
-        }
-        return server;
-    }
-
-
-    public static boolean checkIfServerIsRunning(int port) {
-
-        boolean isServerRunning = false;
-        ServerSocket serverSocket;
-        try {
-            serverSocket = new ServerSocket(port);
-            serverSocket.close();
-        } catch (IOException e) {
-            //If control comes here, then it means that the port is in use
-            isServerRunning = true;
-        } finally {
-            serverSocket = null;
-        }
-        return isServerRunning;
-    }
 }

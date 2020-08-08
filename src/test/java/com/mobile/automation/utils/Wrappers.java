@@ -92,4 +92,17 @@ public class Wrappers extends BaseDriver {
                 AndroidUIAutomator("new UiScrollable(new UiSelector()).scrollIntoView(text(\""+text+"\"))"));
 
     }
+
+    public static void scrollAndClick(String visibleText) {
+        driver.findElement(MobileBy.
+                AndroidUIAutomator("new UiScrollable(new UiSelector().scrollable(true).instance(0))." +
+                        "scrollIntoView(new UiSelector().textContains(\""+visibleText+"\").instance(0))")).click();
+
+}
+
+    public static void verifyAndClickElement(MobileElement mobileElement){
+        waitUntilVisible(mobileElement,5);
+        waitUntilClickable(mobileElement,5);
+        mobileElement.click();
+    }
 }
